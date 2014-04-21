@@ -2,10 +2,7 @@ package net.shadowraze.dungeons.dungeon;
 
 import net.shadowraze.dungeons.Dungeons;
 import net.shadowraze.dungeons.utils.Messaging;
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.Effect;
-import org.bukkit.Location;
+import org.bukkit.*;
 import org.bukkit.entity.*;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
@@ -86,6 +83,7 @@ public class DungeonMob {
     }
 
     public void spawnMob(Dungeon dungeon, Location location) {
+        if(location.getBlock().getType() == Material.SPONGE) location.getBlock().setType(Material.AIR);
         LivingEntity mob = (LivingEntity) location.getWorld().spawnEntity(location, mobType);
         if(displayName != null) mob.setCustomName(getDisplayName());
         mob.setCustomNameVisible(mob.getCustomName() != null);

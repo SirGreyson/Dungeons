@@ -11,6 +11,8 @@ import net.shadowraze.dungeons.lobby.Lobby;
 import net.shadowraze.dungeons.lobby.LobbyManager;
 import net.shadowraze.dungeons.utils.Messaging;
 import net.shadowraze.dungeons.utils.StringsUtil;
+import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -112,6 +114,34 @@ public class DungeonCommand {
             else {
                 dungeon.getStage(args.getInteger(1)).addMobSpawn(((Player) sender).getLocation());
                 Messaging.send(sender, "&aSuccessfully add mob spawn at your location for stage &b" + args.getInteger(1) + "&a in dungeon &b" + args.getString(0));
+            }
+        }
+    }
+
+    @Command(aliases = {"showspawns"}, desc = "Stage mob spawn viewing command", usage = "<dungeonID> <stageID>", min = 2, max = 2)
+    @CommandPermissions("dungeons.admin")
+    public static void showMobSpawns(CommandContext args, CommandSender sender) throws CommandException {
+        if (DungeonManager.dungeonExists(args.getString(0))) Messaging.send(sender, "&cThere is no dungeon with that name!");
+        else {
+            Dungeon dungeon = DungeonManager.getDungeon(args.getString(0));
+            if(!dungeon.hasStage(args.getInteger(1))) Messaging.send(sender, "&cThere is no stage with that ID in " + args.getString(0));
+            else {
+                for(Location mobSpawn : dungeon.getStage(args.getInteger(1)).getMobSpawns()) mobSpawn.getBlock().setType(Material.SPONGE);
+                Messaging.send(sender, "&aMarked all mob spawn locations with a sponge for stage &b" + args.getInteger(1) + "&a in dungeon &b" + args.getString(0));
+            }
+        }
+    }
+
+    @Command(aliases = {"hidespawns"}, desc = "Stage mob spawn hiding command", usage = "<dungeonID> <stageID>", min = 2, max = 2)
+    @CommandPermissions("dungeons.admin")
+    public static void hideMobSpawns(CommandContext args, CommandSender sender) throws CommandException {
+        if (DungeonManager.dungeonExists(args.getString(0))) Messaging.send(sender, "&cThere is no dungeon with that name!");
+        else {
+            Dungeon dungeon = DungeonManager.getDungeon(args.getString(0));
+            if(!dungeon.hasStage(args.getInteger(1))) Messaging.send(sender, "&cThere is no stage with that ID in " + args.getString(0));
+            else {
+                for(Location mobSpawn : dungeon.getStage(args.getInteger(1)).getMobSpawns()) if(mobSpawn.getBlock().getType() == Material.SPONGE) mobSpawn.getBlock().setType(Material.AIR);
+                Messaging.send(sender, "&aRemoved all sponges at mob spawns for stage &b" + args.getInteger(1) + "&a in dungeon &b" + args.getString(0));
             }
         }
     }

@@ -107,7 +107,6 @@ public class Stage {
         mobSpawns.add(location);
     }
 
-    /*TODO: Allow mob spawns to be removed by breaking block*/
     public void removeMobSpawn(Location location) {
         mobSpawns.remove(location);
     }

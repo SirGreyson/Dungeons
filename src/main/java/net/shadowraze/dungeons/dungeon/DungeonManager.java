@@ -3,6 +3,7 @@ package net.shadowraze.dungeons.dungeon;
 import net.shadowraze.dungeons.utils.Configuration;
 import net.shadowraze.dungeons.utils.Messaging;
 import net.shadowraze.dungeons.utils.StringsUtil;
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.configuration.ConfigurationSection;
@@ -89,6 +90,15 @@ public class DungeonManager {
 
     public static DungeonMob getDungeonMob(String mobID) {
         if(dungeonMobs.containsKey(mobID)) return dungeonMobs.get(mobID);
+        return null;
+    }
+
+    public static boolean isMobSpawn(Location location) {
+        return getDungeon(location) != null;
+    }
+
+    public static Dungeon getDungeon(Location mobSpawn) {
+        for(Dungeon dungeon : getDungeons()) if(dungeon.getStage(mobSpawn) != null) return dungeon;
         return null;
     }
 }

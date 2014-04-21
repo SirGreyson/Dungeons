@@ -56,5 +56,10 @@ public class DungeonListener implements Listener {
                 LobbyManager.getSignLobby(e.getBlock().getLocation()).removeLobbySign(e.getBlock().getLocation());
                 Messaging.send(e.getPlayer(), "&aLobby sign removed!");
             }
+        else if(e.getBlock().getType() == Material.SPONGE)
+                if(DungeonManager.isMobSpawn(e.getBlock().getLocation())) {
+                    DungeonManager.getDungeon(e.getBlock().getLocation()).getStage(e.getBlock().getLocation()).removeMobSpawn(e.getBlock().getLocation());
+                    Messaging.send(e.getPlayer(), "&aMob spawn removed!");
+                }
     }
 }

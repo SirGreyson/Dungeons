@@ -3,6 +3,7 @@ package net.shadowraze.dungeons.dungeon;
 import net.shadowraze.dungeons.lobby.Lobby;
 import net.shadowraze.dungeons.utils.Configuration;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -42,6 +43,11 @@ public class Dungeon {
 
     public Stage getStage(int stageID) {
         return loadedStages.get(stageID);
+    }
+
+    public Stage getStage(Location mobSpawn) {
+        for(Stage stage : loadedStages) if(stage.getMobSpawns().contains(mobSpawn)) return stage;
+        return null;
     }
 
     public void addStage(Stage stage) {
