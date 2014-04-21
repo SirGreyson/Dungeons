@@ -167,9 +167,14 @@ public class Lobby {
 
     public void removePlayer(Player player) {
         players.remove(player.getUniqueId());
-        player.teleport(Configuration.SPAWN_LOCATION);
-        Messaging.send(player, "&aYou have left your lobby!");
         broadcast("&b" + player.getName() + "&c has left the lobby");
+        if(isInProgress()) {
+            player.setHealth(0);
+            if(players.size() <= 0) finish();
+        } else if(player != null && player.isOnline()) {
+            player.teleport(Configuration.SPAWN_LOCATION);
+            Messaging.send(player, "&aYou have left your lobby!");
+        }
         updateLobbySigns();
     }
 
@@ -212,7 +217,8 @@ public class Lobby {
     }
 
     public void finish() {
-        broadcast("&aGame over! Thanks for playing!");
+        broadcast("&aGame over! " + (activeDungeon.getActiveStage().isLastStage() ? "You win!" :
+                "You made it to stage &b" + (activeDungeon.getActiveStage().getStageID() + 1) + "&a/&b" + activeDungeon.getLoadedStages().size()));
         for(UUID player : players) if(Bukkit.getPlayer(player) != null) Bukkit.getPlayer(player).teleport(Configuration.SPAWN_LOCATION);
         players = new ArrayList<UUID>();
         List<Dungeon> avaiableDungeons = getAvaialableDungeons();

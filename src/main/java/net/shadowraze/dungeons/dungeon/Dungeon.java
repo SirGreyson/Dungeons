@@ -2,15 +2,15 @@ package net.shadowraze.dungeons.dungeon;
 
 import net.shadowraze.dungeons.lobby.Lobby;
 import net.shadowraze.dungeons.utils.Configuration;
+import net.shadowraze.dungeons.utils.Messaging;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 public class Dungeon {
 
@@ -20,12 +20,14 @@ public class Dungeon {
     private Lobby inLobby;
     private Stage activeStage;
     private Scoreboard scoreboard;
+    private Map<UUID, Long> deadPlayers;
     private List<UUID> spawnedMobs;
 
     public Dungeon(String dungeonID) {
         this.dungeonID = dungeonID;
         this.loadedStages = new ArrayList<Stage>();
         this.scoreboard = createDungeonBoard();
+        this.deadPlayers = new HashMap<UUID, Long>();
         this.spawnedMobs = new ArrayList<UUID>();
     }
 
@@ -91,6 +93,33 @@ public class Dungeon {
         this.activeStage = activeStage;
     }
 
+    public boolean allPlayersDead() {
+        return deadPlayers.keySet().size() >= inLobby.getPlayers().size();
+    }
+
+    public boolean isPlayerDead(UUID deadPlayer) {
+        return deadPlayers.containsKey(deadPlayer);
+    }
+
+    public List<UUID> getDeadPlayers() {
+        return new ArrayList<UUID>(deadPlayers.keySet());
+    }
+
+    public void addDeadPlayer(Player deadPlayer) {
+        if(allPlayersDead()) inLobby.finish();
+        else {
+            Messaging.send(deadPlayer, "&aYou have died! You must wait &b20&a seconds before respawning!" /*TODO: Respawn interval*/ );
+            deadPlayers.put(deadPlayer.getUniqueId(), System.currentTimeMillis());
+        }
+    }
+
+    /*FIXME*/
+    public boolean respawnDeadPlayer(Player deadPlayer) {
+        if(System.currentTimeMillis() - deadPlayers.get(deadPlayer.getUniqueId()) >= Configuration.RESPAWN_DELAY * activeStage.getStageID())
+        deadPlayers.remove(deadPlayer);
+        return deadPlayers.containsKey(deadPlayer);
+    }
+
     public boolean hasSpawnedMob(UUID mob) {
         return spawnedMobs.contains(mob);
     }
@@ -104,6 +133,7 @@ public class Dungeon {
         this.activeStage = null;
         scoreboard.getTeam(dungeonID).unregister();
         this.scoreboard = createDungeonBoard();
+        this.deadPlayers = new HashMap<UUID, Long>();
         this.spawnedMobs = new ArrayList<UUID>();
     }
 

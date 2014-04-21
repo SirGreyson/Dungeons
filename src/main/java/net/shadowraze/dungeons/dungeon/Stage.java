@@ -67,6 +67,10 @@ public class Stage {
         return stageID;
     }
 
+    public boolean isLastStage() {
+        return !dungeon.hasStage(stageID + 1);
+    }
+
     public Location getSpawnLocation() {
         return spawnLocation;
     }
@@ -153,6 +157,7 @@ public class Stage {
         }
 
         dungeon.getLobby().broadcast("&aTeleporting to Stage&b " + (stageID + 1) + "&a/&b" + dungeon.getLoadedStages().size() + "&a...");
+        dungeon.getDeadPlayers().clear();
         for(UUID player : dungeon.getLobby().getPlayers()) if(Bukkit.getPlayer(player) != null) Bukkit.getPlayer(player).teleport(spawnLocation);
         runMobSpawnTask();
         dungeon.setActiveStage(this);
@@ -179,17 +184,16 @@ public class Stage {
 
     public void startNextStage() {
         stageCountdown = Configuration.NEXT_STAGE_DELAY + 1;
-        final boolean isLast = !dungeon.hasStage(stageID + 1);
         gameTask = Bukkit.getScheduler().runTaskTimer(Dungeons.getPlugin(), new Runnable() {
             @Override
             public void run() {
                 stageCountdown--;
                 if (stageCountdown % 5 == 0 && stageCountdown > 0) {
-                    if (isLast) dungeon.getLobby().broadcast("&aTeleporting to lobby in &b" + stageCountdown + " &aseconds...");
+                    if (isLastStage()) dungeon.getLobby().broadcast("&aTeleporting to lobby in &b" + stageCountdown + " &aseconds...");
                     else dungeon.getLobby().broadcast("&aNext stage starting in &b" + stageCountdown + " &aseconds...");
                 }
                 else if (stageCountdown <= 0) {
-                    if (!isLast) {
+                    if (!isLastStage()) {
                         dungeon.getLoadedStages().get(stageID + 1).startStage();
                         resetStage();
                     }

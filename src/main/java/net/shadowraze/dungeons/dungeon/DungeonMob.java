@@ -133,10 +133,8 @@ public class DungeonMob {
             else if(entity instanceof Player) nearestP = (Player) entity;
         }
         if(nearestP == null) return;
-        for(int i = 0; i <= amount; i++) {
-            Projectile toShoot = (Projectile) mob.getWorld().spawnEntity(mob.getLocation(), projectile);
-            mob.launchProjectile(toShoot.getClass(), nearestP.getLocation().toVector().subtract(mob.getLocation().toVector()).normalize());
-        }
+        Projectile toShoot = (Projectile) mob.getWorld().spawnEntity(mob.getLocation(), projectile);
+        for(int i = 0; i <= amount; i++) mob.launchProjectile(toShoot.getClass(), nearestP.getLocation().toVector().subtract(mob.getLocation().toVector()).normalize());
     }
 
     public void doSpawnAbility(LivingEntity mob, String minionType, int amount) {

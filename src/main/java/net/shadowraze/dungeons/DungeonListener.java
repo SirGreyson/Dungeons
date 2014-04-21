@@ -2,16 +2,22 @@ package net.shadowraze.dungeons;
 
 import net.shadowraze.dungeons.dungeon.Dungeon;
 import net.shadowraze.dungeons.dungeon.DungeonManager;
+import net.shadowraze.dungeons.lobby.Lobby;
 import net.shadowraze.dungeons.lobby.LobbyManager;
 import net.shadowraze.dungeons.utils.Messaging;
 import org.bukkit.Material;
+import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
+
+import javax.persistence.Lob;
 
 public class DungeonListener implements Listener {
 
@@ -28,15 +34,12 @@ public class DungeonListener implements Listener {
         e.getBlock().breakNaturally();
     }
 
-    /*FIXME*/
     @EventHandler
     public void onSignClick(PlayerInteractEvent e) {
         if(e.getAction() != Action.RIGHT_CLICK_BLOCK) return;
-        if(e.getClickedBlock().getType() == Material.SIGN || e.getClickedBlock().getType() == Material.WALL_SIGN)
-            if(LobbyManager.getSignLobby(e.getClickedBlock().getLocation()) != null) {
-                e.getPlayer().performCommand("/lobby join " + LobbyManager.getSignLobby(e.getClickedBlock().getLocation()).getLobbyID());
-                Messaging.send(e.getPlayer(), "&aLobby sign removed!");
-            }
+        if(e.getClickedBlock().getType() == Material.SIGN_POST || e.getClickedBlock().getType() == Material.WALL_SIGN)
+            if(LobbyManager.getSignLobby(e.getClickedBlock().getLocation()) != null)
+                e.getPlayer().performCommand("lobby join " + LobbyManager.getSignLobby(e.getClickedBlock().getLocation()).getLobbyID());
     }
 
     @EventHandler
@@ -48,10 +51,23 @@ public class DungeonListener implements Listener {
         dungeon.getSpawnedMobs().remove(e.getEntity().getUniqueId());
     }
 
-    /*FIXME*/
+    @EventHandler
+    public void onPlayerDeath(PlayerDeathEvent e) {
+        Lobby lobby = LobbyManager.getLobby(e.getEntity().getUniqueId());
+        if(lobby == null || !lobby.isInProgress()) return;
+        lobby.getActiveDungeon().addDeadPlayer(e.getEntity());
+    }
+
+    @EventHandler
+    public void onPlayerRespawn(PlayerRespawnEvent e) {
+        Lobby lobby = LobbyManager.getLobby(e.getPlayer().getUniqueId());
+        if(lobby == null || !lobby.isInProgress()) return;
+        if(lobby.getActiveDungeon().isPlayerDead(e.getPlayer().getUniqueId())) e.setRespawnLocation(lobby.getSpawnLocation());
+    }
+
     @EventHandler
     public void onBlockBreak(BlockBreakEvent e) {
-        if(e.getBlock().getType() == Material.SIGN || e.getBlock().getType() == Material.WALL_SIGN || e.getBlock().getType() == Material.SIGN_POST)
+        if(e.getBlock().getType() == Material.WALL_SIGN || e.getBlock().getType() == Material.SIGN_POST)
             if(LobbyManager.getSignLobby(e.getBlock().getLocation()) != null) {
                 LobbyManager.getSignLobby(e.getBlock().getLocation()).removeLobbySign(e.getBlock().getLocation());
                 Messaging.send(e.getPlayer(), "&aLobby sign removed!");

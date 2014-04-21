@@ -27,6 +27,7 @@ public class Configuration {
 
     public static int LOBBY_START_DELAY;
     public static int NEXT_STAGE_DELAY;
+    public static int RESPAWN_DELAY;
 
     public static void loadConfigurations(Dungeons instance) {
         plugin = instance;
@@ -45,6 +46,7 @@ public class Configuration {
         DEFAULT_SPAWNED_TOTAL = plugin.getConfig().getInt("defaultSpawnedTotal");
         LOBBY_START_DELAY = plugin.getConfig().getInt("lobbyStartDelay");
         NEXT_STAGE_DELAY = plugin.getConfig().getInt("nextStageDelay");
+        RESPAWN_DELAY = plugin.getConfig().getInt("respawnDelay");
     }
 
     public static void saveConfigurations() {

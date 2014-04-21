@@ -30,3 +30,5 @@ defaultSpawnedTotal: 50
 lobbyStartDelay: 20
 #Delay (in seconds) between stages. Can be skipped with /lobby continue
 nextStageDelay: 30
+#Delay (in seconds) before a player can respawn after dying in a Dungeon
+respawnDelay: 10

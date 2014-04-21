@@ -71,6 +71,7 @@ public class LobbyCommand {
     public static void joinLobby(CommandContext args, CommandSender sender) throws CommandException {
         if(!(sender instanceof Player)) Messaging.send(sender, "&cThis command cannot be run from the console!");
         else if(!LobbyManager.lobbyExists(args.getString(0))) Messaging.send(sender, "&cThere is no lobby with that name!");
+        else if(LobbyManager.getLobby(args.getString(0)).getActiveDungeon() == null) Messaging.send(sender, "&cThis lobby has no Dungeon and cannot be joined!");
         else if(LobbyManager.getLobby(((Player) sender).getUniqueId()) != null) Messaging.send(sender, "&cYou are already in a lobby! Type &6/lobby leave&c to leave");
         else if(LobbyManager.getLobby(args.getString(0)).addPlayer((Player) sender)) ((Player) sender).teleport(LobbyManager.getLobby(args.getString(0)).getSpawnLocation());
     }
@@ -79,6 +80,7 @@ public class LobbyCommand {
     public static void leaveLobby(CommandContext args, CommandSender sender) throws CommandException {
         if(!(sender instanceof Player)) Messaging.send(sender, "&cThis command cannot be run from the console!");
         else if(LobbyManager.getLobby(((Player) sender).getUniqueId()) == null) Messaging.send(sender, "&cYou are not currently in a lobby!");
+        else if(LobbyManager.getLobby(((Player) sender).getUniqueId()).isInProgress()) Messaging.send(sender, "&cYou cannot leave once the lobby has started!");
         else LobbyManager.getLobby(((Player) sender).getUniqueId()).removePlayer((Player) sender);
     }
 
@@ -104,6 +106,18 @@ public class LobbyCommand {
             Lobby inLobby = LobbyManager.getLobby(((Player) sender).getUniqueId());
             if(inLobby.getActiveDungeon().getActiveStage() == null || !inLobby.getActiveDungeon().getActiveStage().isFinished()) Messaging.send(sender, "&cYou cannot use this command right now!");
             else inLobby.getActiveDungeon().getActiveStage().addContinueVote(sender);
+        }
+    }
+
+    @Command(aliases = {"respawn"}, desc = "Lobby respawning command", max = 0)
+    public static void respawnInLobby(CommandContext args, CommandSender sender) throws CommandException {
+        if(!(sender instanceof Player)) Messaging.send(sender, "&cThis command cannot be run from the console!");
+        else if(LobbyManager.getLobby(((Player) sender).getUniqueId()) == null) Messaging.send(sender, "&cYou are not currently in a lobby!");
+        else {
+            Lobby inLobby = LobbyManager.getLobby(((Player) sender).getUniqueId());
+            if(!inLobby.isInProgress() || inLobby.getActiveDungeon() == null) Messaging.send(sender, "&cYou cannot use this command right now!");
+            else if(!inLobby.getActiveDungeon().isPlayerDead(((Player) sender).getUniqueId())) Messaging.send(sender, "&cYou can't use this command unless you're dead!");
+            else if(inLobby.getActiveDungeon().respawnDeadPlayer((Player) sender)) ((Player) sender).teleport(inLobby.getActiveDungeon().getActiveStage().getSpawnLocation());
         }
     }
 }
