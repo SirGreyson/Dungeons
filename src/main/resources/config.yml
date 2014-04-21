@@ -1,0 +1,32 @@
+#Formatting for Lobby info/join signs
+#The following variables can be used:
+#  %dungeon% = The name of the active dungeon for the lobby
+#  %playercount% = The number of players currently in the lobby
+#  %maxplayers% = The maximum number of allowed players for the lobby
+#  %status% = Shows either '&aWAITING' when in-lobby, or '&cIN PROGRESS' when in dungeon
+#  %leader% = In VIP lobbies, shows the name of the lobby leader. NONE if there's no leader
+lobbySign:
+  - '&9[Dungeons]'
+  - '&c%dungeon%'
+  - '&a%playercount%/%maxplayers% Players'
+  - '%status%'
+
+#Location where players will be teleported to after leaving/finishing a lobby  
+#This value must be set manually to preserve my wonderful formatting :) 
+#Location formatting = x,y,z,worldName
+spawnLocation: 100,75,100,world
+
+#Default number of maximum players a lobby can have
+defaultMaxPlayers: 4
+
+#Default interval between mob spawns in a Dungeon
+defaultSpawnRate: 5
+#Default value for the maximum number of mobs to be spawned at any given time in a Stage
+defaultSpawnedMax: 20
+#Default value for the maximum total number of mobs to spawn in a given Stage 
+defaultSpawnedTotal: 50
+
+#Delay (in seconds) before a full lobby officially starts a Dungeon 
+lobbyStartDelay: 20
+#Delay (in seconds) between stages. Can be skipped with /lobby continue
+nextStageDelay: 30

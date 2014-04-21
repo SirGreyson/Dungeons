@@ -1,0 +1,9 @@
+name: Dungeons
+version: 0.2.1
+description: Dungeons and dueling galore!
+author: SirReason
+ 
+main: net.shadowraze.dungeons.Dungeons
+depend: [WorldEdit]
+
+commands:
