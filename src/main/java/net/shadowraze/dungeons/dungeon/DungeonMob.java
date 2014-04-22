@@ -4,6 +4,7 @@ import net.shadowraze.dungeons.Dungeons;
 import net.shadowraze.dungeons.utils.Messaging;
 import org.bukkit.*;
 import org.bukkit.entity.*;
+import org.bukkit.event.entity.PigZapEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -85,6 +86,8 @@ public class DungeonMob {
     public void spawnMob(Dungeon dungeon, Location location) {
         if(location.getBlock().getType() == Material.SPONGE) location.getBlock().setType(Material.AIR);
         LivingEntity mob = (LivingEntity) location.getWorld().spawnEntity(location, mobType);
+        if(mob instanceof Wolf) ((Wolf) mob).setAngry(true);
+        else if(mob instanceof PigZombie) ((PigZombie) mob).setAngry(true);
         if(displayName != null) mob.setCustomName(getDisplayName());
         mob.setCustomNameVisible(mob.getCustomName() != null);
         if(health != 0) mob.setMaxHealth(health);
