@@ -143,7 +143,6 @@ public class DungeonMob {
             if(minionType.equalsIgnoreCase("ZOMBIE_BABY")) ((Zombie) mob.getWorld().spawnEntity(mob.getLocation(), EntityType.ZOMBIE)).setBaby(true);
             else mob.getWorld().spawnEntity(mob.getLocation(), EntityType.valueOf(minionType));
             mob.getWorld().playEffect(mob.getLocation(), Effect.MOBSPAWNER_FLAMES, 100);
-            mob.setCustomName("Minion");
         }
     }
 }

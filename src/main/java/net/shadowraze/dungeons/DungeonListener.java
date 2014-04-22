@@ -45,10 +45,10 @@ public class DungeonListener implements Listener {
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
         Dungeon dungeon = DungeonManager.getDungeon(e.getEntity().getUniqueId());
-        if(dungeon == null && !e.getEntity().getCustomName().equalsIgnoreCase("Minion")) return;
+        if(dungeon == null) return;
         e.setDroppedExp(0);
         e.getDrops().clear();
-        if(dungeon != null) dungeon.getSpawnedMobs().remove(e.getEntity().getUniqueId());
+        dungeon.getSpawnedMobs().remove(e.getEntity().getUniqueId());
     }
 
     @EventHandler
