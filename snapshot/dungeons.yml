@@ -1,0 +1,71 @@
+dungeonMobs:
+  #The DungeonMob's ID
+  witchBoss:
+    #Entity Type (http://jd.bukkit.org/rb/apidocs/org/bukkit/entity/EntityType.html)
+    mobType: WITCH
+    #Name to show above the mob's head, leave empty for no name
+    displayName: '&cWitch Boss'
+    #Amount of health the mob will spawn with
+    health: 300
+    #Item mob spawns holding (if possible) Type 'none' for no item
+    inHand: DIAMOND_SWORD
+    #How many blocks away from the mob should the ability system search for players to attack? (default = 10)
+    abilityTargetRange: 15
+    #How often (in seconds) should the mob execute its abilities?
+    abilityInterval: 15
+    #List of abilities a mob has to defend itself
+    abilities:
+    - 'SHOOT:FIREBALL'
+    - 'MINIONS:ZOMBIE_BABY'
+    #Active potion effects mob spawns with [Format = PotionEffectType:Amplifier]
+    potionEffects:
+    - 'STRENGTH:2'
+    - 'REGENERATION:5'
+      
+dungeons:
+  testDungeon:
+    stages:
+      '0':
+        spawnLocation: 180,69,177,world
+        completionCmd: msg %p Stage 1 Complete!
+        spawnRate: 5 
+        spawnedMax: 20
+        totalSpawnedMax: 50
+        mobSpawns:
+        - 180,69,167,world
+        - 172,69,170,world
+        - 188,69,170,world
+        - 172,69,183,world
+        - 188,69,183,world
+        dungeonMobs: 
+        - SKELETON
+        - ZOMBIE
+      '1':
+        spawnLocation: 180,69,177,world
+        completionCmd: msg %p Stage 2 Complete!
+        spawnRate: 3
+        spawnedMax: 45
+        totalSpawnedMax: 70
+        mobSpawns:
+        - 180,69,167,world
+        - 172,69,170,world
+        - 188,69,170,world
+        - 172,69,183,world
+        - 188,69,183,world
+        dungeonMobs:
+        - SKELETON
+        - ZOMBIE
+      '2':
+        spawnLocation: 180,69,177,world
+        completionCmd: msg %p Stage 3 Complete! You win!
+        spawnRate: 3
+        spawnedMax: 1
+        totalSpawnedMax: 1
+        mobSpawns:
+        - 180,69,167,world
+        - 172,69,170,world
+        - 188,69,170,world
+        - 172,69,183,world
+        - 188,69,183,world
+        dungeonMobs:
+        - witchBoss
