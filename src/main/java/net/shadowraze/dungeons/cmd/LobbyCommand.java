@@ -117,7 +117,7 @@ public class LobbyCommand {
             Lobby inLobby = LobbyManager.getLobby(((Player) sender).getUniqueId());
             if(!inLobby.isInProgress() || inLobby.getActiveDungeon() == null) Messaging.send(sender, "&cYou cannot use this command right now!");
             else if(!inLobby.getActiveDungeon().isPlayerDead(((Player) sender).getUniqueId())) Messaging.send(sender, "&cYou can't use this command unless you're dead!");
-            else if(inLobby.getActiveDungeon().respawnDeadPlayer((Player) sender)) ((Player) sender).teleport(inLobby.getActiveDungeon().getActiveStage().getSpawnLocation());
+            else if(inLobby.getActiveDungeon().respawnDeadPlayer((Player) sender, false)) ((Player) sender).teleport(inLobby.getActiveDungeon().getActiveStage().getSpawnLocation());
         }
     }
 }

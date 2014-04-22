@@ -156,8 +156,8 @@ public class Stage {
             gameTask = null;
         }
 
-        dungeon.getLobby().broadcast("&aTeleporting to Stage&b " + (stageID + 1) + "&a/&b" + dungeon.getLoadedStages().size() + "&a...");
-        dungeon.getDeadPlayers().clear();
+        dungeon.getLobby().broadcast("&aTeleporting to Stage&b " + (stageID + 1) + "&a/&b" + dungeon.getLoadedStages().size() + "&a...");dungeon.getDeadPlayers().clear();
+        for(UUID deadPlayer : dungeon.getDeadPlayers()) if(Bukkit.getPlayer(deadPlayer) != null) dungeon.respawnDeadPlayer(Bukkit.getPlayer(deadPlayer), true);
         for(UUID player : dungeon.getLobby().getPlayers()) if(Bukkit.getPlayer(player) != null) Bukkit.getPlayer(player).teleport(spawnLocation);
         runMobSpawnTask();
         dungeon.setActiveStage(this);

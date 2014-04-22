@@ -108,16 +108,18 @@ public class Dungeon {
     public void addDeadPlayer(Player deadPlayer) {
         if(allPlayersDead()) inLobby.finish();
         else {
-            Messaging.send(deadPlayer, "&aYou have died! You must wait &b20&a seconds before respawning!" /*TODO: Respawn interval*/ );
+            Messaging.send(deadPlayer, "&aYou have died! You must wait &b" + Configuration.RESPAWN_DELAY * (activeStage.getStageID() + 1) + " &aseconds before respawning!");
             deadPlayers.put(deadPlayer.getUniqueId(), System.currentTimeMillis());
         }
     }
 
-    /*FIXME*/
-    public boolean respawnDeadPlayer(Player deadPlayer) {
-        if(System.currentTimeMillis() - deadPlayers.get(deadPlayer.getUniqueId()) >= Configuration.RESPAWN_DELAY * activeStage.getStageID())
-        deadPlayers.remove(deadPlayer);
-        return deadPlayers.containsKey(deadPlayer);
+    public boolean respawnDeadPlayer(Player deadPlayer, boolean forced) {
+        if(System.currentTimeMillis() - deadPlayers.get(deadPlayer.getUniqueId()) < Configuration.RESPAWN_DELAY * (activeStage.getStageID() + 1) * 1000 && !forced)
+            Messaging.send(deadPlayer, "&cYou cannot respawn yet!");
+        else {
+            deadPlayers.remove(deadPlayer.getUniqueId());
+            inLobby.broadcast("&b" + deadPlayer.getName() + " &ahas respawned!");
+        } return !deadPlayers.containsKey(deadPlayer.getUniqueId());
     }
 
     public boolean hasSpawnedMob(UUID mob) {

@@ -55,6 +55,7 @@ public class DungeonListener implements Listener {
     public void onPlayerDeath(PlayerDeathEvent e) {
         Lobby lobby = LobbyManager.getLobby(e.getEntity().getUniqueId());
         if(lobby == null || !lobby.isInProgress()) return;
+        lobby.broadcast("&b" + e.getEntity().getName() + " &chas died! Be cautious until they can respawn!");
         lobby.getActiveDungeon().addDeadPlayer(e.getEntity());
     }
 
