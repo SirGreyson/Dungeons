@@ -7,8 +7,6 @@ import com.sk89q.minecraft.util.commands.CommandPermissions;
 import net.shadowraze.dungeons.dungeon.Dungeon;
 import net.shadowraze.dungeons.dungeon.DungeonManager;
 import net.shadowraze.dungeons.dungeon.Stage;
-import net.shadowraze.dungeons.lobby.Lobby;
-import net.shadowraze.dungeons.lobby.LobbyManager;
 import net.shadowraze.dungeons.utils.Messaging;
 import net.shadowraze.dungeons.utils.StringsUtil;
 import org.bukkit.Location;
@@ -63,7 +61,7 @@ public class DungeonCommand {
     @CommandPermissions("dungeons.admin")
     public static void addStage(CommandContext args, CommandSender sender) throws CommandException {
         if(!(sender instanceof Player)) Messaging.send(sender, "&cThis command cannot be run from the console!");
-        else if(DungeonManager.dungeonExists(args.getString(0))) Messaging.send(sender, "&cThere is no dungeon with that name!");
+        else if(!DungeonManager.dungeonExists(args.getString(0))) Messaging.send(sender, "&cThere is no dungeon with that name!");
         else {
             Dungeon dungeon = DungeonManager.getDungeon(args.getString(0));
             dungeon.addStage(new Stage(dungeon, dungeon.getLoadedStages().size(), ((Player) sender).getLocation()));
@@ -74,7 +72,7 @@ public class DungeonCommand {
     @Command(aliases = {"delstage"}, desc = "Dungeon stage removal command", usage = "<dungeonID> <stageID>", flags = "a", min = 2)
     @CommandPermissions("dungeons.admin")
     public static void delStage(CommandContext args, CommandSender sender) throws CommandException {
-        if (DungeonManager.dungeonExists(args.getString(0))) Messaging.send(sender, "&cThere is no dungeon with that name!");
+        if (!DungeonManager.dungeonExists(args.getString(0))) Messaging.send(sender, "&cThere is no dungeon with that name!");
         else {
             Dungeon dungeon = DungeonManager.getDungeon(args.getString(0));
             if(!dungeon.hasStage(args.getInteger(1))) Messaging.send(sender, "&cThere is no stage with that ID in " + args.getString(0));
@@ -93,7 +91,7 @@ public class DungeonCommand {
     @Command(aliases = {"setspawn"}, desc = "Stage spawn setting command", usage = "<dungeonID> <stageID>", min = 2, max = 2)
     @CommandPermissions("dungeons.admin")
     public static void setStageSpawn(CommandContext args, CommandSender sender) throws CommandException {
-        if (DungeonManager.dungeonExists(args.getString(0))) Messaging.send(sender, "&cThere is no dungeon with that name!");
+        if (!DungeonManager.dungeonExists(args.getString(0))) Messaging.send(sender, "&cThere is no dungeon with that name!");
         else {
             Dungeon dungeon = DungeonManager.getDungeon(args.getString(0));
             if(!dungeon.hasStage(args.getInteger(1))) Messaging.send(sender, "&cThere is no stage with that ID in " + args.getString(0));
@@ -107,7 +105,7 @@ public class DungeonCommand {
     @Command(aliases = {"addspawn"}, desc = "Stage mob spawn addition command", usage = "<dungeonID> <stageID>", min = 2, max = 2)
     @CommandPermissions("dungeons.admin")
     public static void addMobSpawn(CommandContext args, CommandSender sender) throws CommandException {
-        if (DungeonManager.dungeonExists(args.getString(0))) Messaging.send(sender, "&cThere is no dungeon with that name!");
+        if (!DungeonManager.dungeonExists(args.getString(0))) Messaging.send(sender, "&cThere is no dungeon with that name!");
         else {
             Dungeon dungeon = DungeonManager.getDungeon(args.getString(0));
             if(!dungeon.hasStage(args.getInteger(1))) Messaging.send(sender, "&cThere is no stage with that ID in " + args.getString(0));
@@ -121,7 +119,7 @@ public class DungeonCommand {
     @Command(aliases = {"showspawns"}, desc = "Stage mob spawn viewing command", usage = "<dungeonID> <stageID>", min = 2, max = 2)
     @CommandPermissions("dungeons.admin")
     public static void showMobSpawns(CommandContext args, CommandSender sender) throws CommandException {
-        if (DungeonManager.dungeonExists(args.getString(0))) Messaging.send(sender, "&cThere is no dungeon with that name!");
+        if (!DungeonManager.dungeonExists(args.getString(0))) Messaging.send(sender, "&cThere is no dungeon with that name!");
         else {
             Dungeon dungeon = DungeonManager.getDungeon(args.getString(0));
             if(!dungeon.hasStage(args.getInteger(1))) Messaging.send(sender, "&cThere is no stage with that ID in " + args.getString(0));
@@ -135,7 +133,7 @@ public class DungeonCommand {
     @Command(aliases = {"hidespawns"}, desc = "Stage mob spawn hiding command", usage = "<dungeonID> <stageID>", min = 2, max = 2)
     @CommandPermissions("dungeons.admin")
     public static void hideMobSpawns(CommandContext args, CommandSender sender) throws CommandException {
-        if (DungeonManager.dungeonExists(args.getString(0))) Messaging.send(sender, "&cThere is no dungeon with that name!");
+        if (!DungeonManager.dungeonExists(args.getString(0))) Messaging.send(sender, "&cThere is no dungeon with that name!");
         else {
             Dungeon dungeon = DungeonManager.getDungeon(args.getString(0));
             if(!dungeon.hasStage(args.getInteger(1))) Messaging.send(sender, "&cThere is no stage with that ID in " + args.getString(0));

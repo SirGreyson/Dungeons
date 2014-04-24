@@ -6,7 +6,6 @@ import net.shadowraze.dungeons.lobby.Lobby;
 import net.shadowraze.dungeons.lobby.LobbyManager;
 import net.shadowraze.dungeons.utils.Messaging;
 import org.bukkit.Material;
-import org.bukkit.block.Sign;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -16,8 +15,6 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerRespawnEvent;
-
-import javax.persistence.Lob;
 
 public class DungeonListener implements Listener {
 
@@ -45,7 +42,7 @@ public class DungeonListener implements Listener {
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
         Dungeon dungeon = DungeonManager.getDungeon(e.getEntity().getUniqueId());
-        if(dungeon == null && !e.getEntity().getCustomName().equalsIgnoreCase("Minion")) return;
+        if(dungeon == null || e.getEntity().getCustomName() == null || !e.getEntity().getCustomName().equalsIgnoreCase("Minion")) return;
         e.setDroppedExp(0);
         e.getDrops().clear();
         if(dungeon != null) dungeon.getSpawnedMobs().remove(e.getEntity().getUniqueId());
