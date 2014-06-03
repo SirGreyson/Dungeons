@@ -1,34 +1,83 @@
-#Formatting for Lobby info/join signs
-#The following variables can be used:
-#  %dungeon% = The name of the active dungeon for the lobby
-#  %playercount% = The number of players currently in the lobby
-#  %maxplayers% = The maximum number of allowed players for the lobby
-#  %status% = Shows either '&aWAITING' when in-lobby, or '&cIN PROGRESS' when in dungeon
-#  %leader% = In VIP lobbies, shows the name of the lobby leader. NONE if there's no leader
-lobbySign:
-  - '&9[Dungeons]'
-  - '&c%dungeon%'
-  - '&a%playercount%/%maxplayers% Players'
-  - '%status%'
+###====================================###
+    ### Main Plugin Configuration ###
 
-#Location where players will be teleported to after leaving/finishing a lobby  
-#This value must be set manually to preserve my wonderful formatting :) 
-#Location formatting = x,y,z,worldName
+## Prefix for messages sent by Dungeons ##
+prefix: '&6[&9Dungeons&6]&r '
+## Prefix for broadcasts sent by Dungeons ##
+broadcastPrefix: '&6&l[&9Dungeons&6&l]&r '
+
+## Location where players will teleport after ##
+## leaving/finishing a Lobby. This value must ##
+## be manually set to preserve the formatting ##
 spawnLocation: 100,75,100,world
 
-#Default number of maximum players a lobby can have
-defaultMaxPlayers: 4
+## World in which the Dungeons are run/stored ##
+dungeonWorld: world
 
-#Default interval between mob spawns in a Dungeon
-defaultSpawnRate: 5
-#Default value for the maximum number of mobs to be spawned at any given time in a Stage
-defaultSpawnedMax: 20
-#Default value for the maximum total number of mobs to spawn in a given Stage 
-defaultSpawnedTotal: 50
+## Lobby Sign configuration ##
+lobbySignFormat: []
 
-#Delay (in seconds) before a full lobby officially starts a Dungeon 
+## Time (in seconds) before a STARTING Lobby actually starts ##
 lobbyStartDelay: 20
-#Delay (in seconds) between stages. Can be skipped with /lobby continue
-nextStageDelay: 30
-#Delay (in seconds) before a player can respawn after dying in a Dungeon
-respawnDelay: 10
+## Time (in seconds) between attempts to spawn new mobs in a Stage ##
+mobSpawnDelay: 3
+## Time (in seconds) between Stage rotations, unless force-continued ##
+stageRotateDelay: 30
+
+## Material for adding multiple mob spawns to a Stage from WorldEdit ##
+mobSpawnMarker: SPONGE
+
+###====================================###
+   ### Default Lobby/Dungeon Values ###
+   
+## The default max number of players a Lobby can have ##
+maxPlayers: 4
+
+## The default limit for mobs spawned at one time in a Stage ##
+spawnedLimit: 20
+## The default limit for total mobs spawned in the course of a Stage ##
+totalSpawnedLimit: 50
+
+###====================================###
+     ### Scoreboard Configuration ###     
+
+## Lobby Scoreboard Configuration ##
+## Use the following variables: ##
+## %dungeon% - Active Dungeon displayName ##
+## %players% - Number of players / max-players ##
+## %leader% - Leader of the Lobby (VIP ONLY) ##
+lobbyBoard:
+  title: '&eDungeons'  
+  default:
+  - ''
+  - '&9Dungeon:' 
+  - '%dungeon%'
+  - ' '
+  - '&3Players:'
+  - '%players%'
+  vip:
+  - ''
+  - '&9Dungeon:' 
+  - '%dungeon%'
+  - ' '
+  - '&3Leader:'
+  - '%leader%'
+  
+## Dungeon Scoreboard Configuration ##
+## Use the following variables: ##
+## %dungeon% - Active Dungeon displayName ##
+## %stage% - Active Stage ID ##
+## %maxstage% - Total number of Stages in active Dungeon ##
+## %dtokens% - Current DToken score ##
+## %mobcount% - Remaining mobs in active Stage ##
+## %survivors% - Number of players left alive ##
+dungeonBoard:
+- ''
+- '&4Stage:'
+- '&c%stage%&4/&c%maxstage%'
+- ' '
+- '&3Mobs Left:'
+- '&b%mobcount%'
+- '  '
+- '&6Survivors:'
+- '&e%survivors%'

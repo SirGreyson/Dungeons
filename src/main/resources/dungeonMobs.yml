@@ -1,0 +1,13 @@
+reaperBoss:
+  mobType: SKELETON
+  displayName: '&5Reaper'
+  maxHealth: 150
+  itemInHand: IRON_HOE
+  armorItems:
+  - NONE
+  - NONE
+  - LEATHER_CHESTPLATE:1:0
+  - SKULL_ITEM
+  potionEffects:
+  - INVISIBILITY
+  mobAbilities: []

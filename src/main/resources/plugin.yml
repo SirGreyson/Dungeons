@@ -1,9 +1,8 @@
 name: Dungeons
-version: 0.2.2
-description: Dungeons and dueling galore!
+version: 1.0
+description: Dungeons plugin for AvonMC
 author: SirReason
- 
-main: net.shadowraze.dungeons.Dungeons
-depend: [WorldEdit]
+website: http://avonmc.net
 
-commands:
+main: net.avonmc.dungeons.Dungeons
+depend: [MenuAPI, WorldEdit, Vault]
