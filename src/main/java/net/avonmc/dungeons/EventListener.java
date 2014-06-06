@@ -56,7 +56,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
         Lobby lobby = LobbyHandler.getPlayerLobby(e.getEntity());
-        if(lobby == null) return;;
+        if(lobby == null) return;
         e.getEntity().setHealth(e.getEntity().getMaxHealth());
         //dropInventory(e.getEntity()); //FIXME Drops are Dropping on Teleport instead of when the player dies
         e.getEntity().teleport(lobby.getLobbySpawn());
@@ -118,6 +118,7 @@ public class EventListener implements Listener {
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
         if(e.getEntity() instanceof Player || !e.getEntity().getWorld().getName().equalsIgnoreCase(Settings.DUNGEON_WORLD)) return;
+        if(e.getEntity().getCustomName() != null && e.getEntity().getCustomName().equalsIgnoreCase("&cMinion")) return;
         Stage dStage = MobHandler.getDungeonMobStage(e.getEntity().getUniqueId());
         if(dStage == null) return;
         e.setDroppedExp(0);

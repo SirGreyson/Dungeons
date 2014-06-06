@@ -85,7 +85,7 @@ public abstract class Lobby {
     public void setStage(GameStage lobbyGameStage) {
         lobbyTask.setGameStage(lobbyGameStage);
         updateLobbySigns();
-        gameBoard.updateBoard();
+        if(lobbyGameStage != GameStage.DISABLING) gameBoard.updateBoard();
     }
 
     public GameBoard getGameBoard() {
@@ -148,9 +148,9 @@ public abstract class Lobby {
 
     public void finish(boolean isDisabling) {
         setStage(isDisabling ? GameStage.DISABLING : GameStage.RESETTING);
+        broadcast("&aGame over! " + (!activeDungeon.hasNextStage() ? "You win!" : "You made it to Stage &b" + activeDungeon.getActiveStage().getID() + "&a/&b" + activeDungeon.getLoadedStages().size()));
         removeAllPlayers();
         if(!isDisabling) {
-            broadcast("&aGame over! " + (!activeDungeon.hasNextStage() ? "You win!" : "You made it to Stage &b" + activeDungeon.getActiveStage().getID() + "&a/&b" + activeDungeon.getLoadedStages().size()));
             setActiveDungeon(DungeonHandler.getRandomDungeon(isVIP()));
             if(isVIP()) ((VIP) this).reset();
             setStage(GameStage.WAITING);

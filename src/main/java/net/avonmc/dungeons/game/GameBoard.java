@@ -98,11 +98,11 @@ public class GameBoard {
     private String fLine(String boardLine, boolean isLobbyBoard) {
         String fLine = isLobbyBoard ?
             boardLine.
-                replace("%dungeon%", gameLobby.getActiveDungeon().getDisplayName()).
+                replace("%dungeon%", gameLobby.getActiveDungeon() == null ? "" : gameLobby.getActiveDungeon().getDisplayName()).
                 replace("%players%", "&b" + gameLobby.getPlayers().size() + "&a/&b" + gameLobby.getMaxPlayers()).
                 replace("%leader%", gameLobby.isVIP() ? ((VIP) gameLobby).getLeaderString() : "")
             : boardLine.
-                replace("%dungeon%", gameLobby.getActiveDungeon().getDisplayName()).
+                replace("%dungeon%", gameLobby.getActiveDungeon() == null ? "" : gameLobby.getActiveDungeon().getDisplayName()).
                 replace("%stage%", gameLobby.getActiveDungeon().getActiveStage().getID()).
                 replace("%maxstage%", String.valueOf(gameLobby.getActiveDungeon().getLoadedStages().size())).
                 replace("%dtokens%", "PLACEHOLDER"). //TODO

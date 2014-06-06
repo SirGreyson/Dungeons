@@ -15,6 +15,8 @@ import org.bukkit.Location;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
+import org.bukkit.entity.PigZombie;
+import org.bukkit.entity.Wolf;
 
 import java.util.Map;
 import java.util.TreeMap;
@@ -32,12 +34,18 @@ public class MobHandler {
     }
 
     public static boolean canSpawnMob(Stage stage) {
-        return stage.getCurrentSpawned() < stage.getSpawnedLimit() && stage.getTotalSpawned() <= stage.getTotalSpawnedLimit();
+        return stage.getCurrentSpawned() < stage.getSpawnedLimit() && stage.getTotalSpawned() < stage.getTotalSpawnedLimit();
     }
 
     private static LivingEntity spawnMob(String mobID, Location location) {
         if(loadedMobs.containsKey(mobID)) return loadedMobs.get(mobID).spawnMob(location);
-        else if(EntityType.valueOf(mobID) != null) return (LivingEntity) location.getWorld().spawnEntity(location, EntityType.valueOf(mobID));
+        else if(EntityType.valueOf(mobID) != null) {
+            LivingEntity mob = (LivingEntity) location.getWorld().spawnEntity(location, EntityType.valueOf(mobID));
+            if(mob instanceof PigZombie) ((PigZombie) mob).setAngry(true);
+            else if(mob instanceof Wolf) ((Wolf) mob).setAngry(true);
+            mob.setRemoveWhenFarAway(false);
+            return mob;
+        }
         else Messaging.printErr("Tried to spawn invalid Dungeon Mob: " + mobID);
         return null;
     }

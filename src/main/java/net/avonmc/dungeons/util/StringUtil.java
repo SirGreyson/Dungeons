@@ -55,7 +55,7 @@ public class StringUtil {
     public static ItemStack parseItemStack(String stackString) {
         if(stackString.equalsIgnoreCase("NONE")) return new ItemStack(Material.AIR);
         String[] vars = stackString.split(":");
-        return new ItemStack(Material.valueOf(vars[0]), vars.length >= 2 ? asInt(vars[1]) : 1, vars.length >= 3 ? asByte(vars[2]) : 0);
+        return new ItemStack(Material.valueOf(vars[0]), vars.length >= 2 ? asInt(vars[1]) : 1, (short) 0, vars.length >= 3 ? asByte(vars[2]) : 0);
     }
 
     public static ItemStack[] parseItemStackList(List<String> stackList) {

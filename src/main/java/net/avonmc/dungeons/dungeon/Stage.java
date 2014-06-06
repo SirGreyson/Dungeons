@@ -121,7 +121,7 @@ public class Stage {
 
     public int getTotalSpawned() { return totalSpawned; }
 
-    public int getLeftToKill() { return (totalSpawnedLimit - totalSpawned) + currentSpawned.size() + 1; }
+    public int getLeftToKill() { return (totalSpawnedLimit - totalSpawned) + currentSpawned.size(); }
 
     private boolean canContinue() { return currentSpawned.size() == 0 && totalSpawned >= totalSpawnedLimit; }
 
