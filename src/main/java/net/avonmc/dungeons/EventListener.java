@@ -11,6 +11,7 @@ import net.avonmc.dungeons.dungeon.DungeonHandler;
 import net.avonmc.dungeons.dungeon.Stage;
 import net.avonmc.dungeons.lobby.Lobby;
 import net.avonmc.dungeons.lobby.LobbyHandler;
+import net.avonmc.dungeons.mob.DungeonMob;
 import net.avonmc.dungeons.mob.MobHandler;
 import net.avonmc.dungeons.util.Messaging;
 import net.avonmc.dungeons.util.Settings;
@@ -30,7 +31,7 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
 
 public class EventListener implements Listener {
 
@@ -54,31 +55,18 @@ public class EventListener implements Listener {
     }
 
     @EventHandler
-    public void onPlayerDeath(PlayerDeathEvent e) {
-        Lobby lobby = LobbyHandler.getPlayerLobby(e.getEntity());
+    public void onPlayerDeath(final PlayerDeathEvent e) {
+        final Lobby lobby = LobbyHandler.getPlayerLobby(e.getEntity());
         if(lobby == null) return;
         e.getEntity().setHealth(e.getEntity().getMaxHealth());
-        //dropInventory(e.getEntity()); //FIXME Drops are Dropping on Teleport instead of when the player dies
+        for(PotionEffect pe : e.getEntity().getActivePotionEffects()) e.getEntity().removePotionEffect(pe.getType());
         e.getEntity().teleport(lobby.getLobbySpawn());
         lobby.getActiveDungeon().addDeath();
-        if(!lobby.getActiveDungeon().allPlayersDead()) {
+        if (!lobby.getActiveDungeon().allPlayersDead()) {
             Messaging.send(e.getEntity(), "&aYou have died! You must wait until the end of this Stage to respawn!");
             lobby.broadcast("&b" + e.getEntity().getName() + " &ahas died! They will respawn next round... if you make it!");
         } else lobby.finish(false);
     }
-
-    private void dropInventory(Player player) {
-        for(ItemStack itemStack : player.getInventory().getContents())
-            if(itemStack != null) player.getWorld().dropItem(player.getLocation(), itemStack);
-        player.getInventory().clear();
-    }
-
-    /*@EventHandler(priority = EventPriority.HIGHEST)
-    public void onPlayerRespawn(PlayerRespawnEvent e) {
-        Lobby lobby = LobbyHandler.getPlayerLobby(e.getPlayer());
-        if(lobby != null) return;
-        e.setRespawnLocation(lobby.getLobbySpawn());
-    }*/
 
     @EventHandler
     public void onSignChange(SignChangeEvent e) {
@@ -100,7 +88,7 @@ public class EventListener implements Listener {
 
     @EventHandler (priority = EventPriority.HIGHEST)
     public void onBlockBreak(BlockBreakEvent e) {
-        if(e.isCancelled()) return;
+        if(e.isCancelled() || !e.getPlayer().isOp()) return;
         else if(e.getBlock().getType() == Settings.MOB_SPAWN_MARKER) {
             Dungeon dungeon = DungeonHandler.dungeonFromMobSpawn(e.getBlock().getLocation());
             if(dungeon == null) return;
@@ -118,18 +106,27 @@ public class EventListener implements Listener {
     @EventHandler
     public void onEntityDeath(EntityDeathEvent e) {
         if(e.getEntity() instanceof Player || !e.getEntity().getWorld().getName().equalsIgnoreCase(Settings.DUNGEON_WORLD)) return;
-        if(e.getEntity().getCustomName() != null && e.getEntity().getCustomName().equalsIgnoreCase("&cMinion")) return;
-        Stage dStage = MobHandler.getDungeonMobStage(e.getEntity().getUniqueId());
-        if(dStage == null) return;
         e.setDroppedExp(0);
         e.getDrops().clear();
+        if(e.getEntity().getCustomName() != null && e.getEntity().getCustomName().equalsIgnoreCase(StringUtil.colorize("&cMinion"))) return;
+        Stage dStage = MobHandler.getDungeonMobStage(e.getEntity().getUniqueId());
+        if(dStage == null) return;
         dStage.removeMob(e.getEntity().getUniqueId());
     }
 
     @EventHandler
     public void onEntityDamage(EntityDamageByEntityEvent e) {
-        if(e.getEntity() instanceof Player || !e.getEntity().getWorld().getName().equalsIgnoreCase(Settings.DUNGEON_WORLD)) return;
-        if(!(e.getDamager() instanceof Player) && !(e.getDamager() instanceof Projectile)) e.setCancelled(true);
-        else if(e.getDamager() instanceof Projectile && !(((Projectile) e.getDamager()).getShooter() instanceof Player)) e.setCancelled(true);
+        if(!e.getEntity().getWorld().getName().equalsIgnoreCase(Settings.DUNGEON_WORLD)) return;
+        else if(e.getEntity() instanceof Player) {
+            DungeonMob dungeonMob = MobHandler.getDungeonMob(e.getDamager());
+            if (dungeonMob == null) return;
+            e.setCancelled(true);
+            ((Player) e.getEntity()).damage(dungeonMob.getAttackDamage());
+        } else {
+            if(!(e.getDamager() instanceof Player) && !(e.getDamager() instanceof Projectile)) e.setCancelled(true);
+            else if(e.getDamager() instanceof Projectile && !(((Projectile) e.getDamager()).getShooter() instanceof Player)) e.setCancelled(true);
+            DungeonMob dMob = MobHandler.getDungeonMob(e.getEntity());
+            if(dMob != null) dMob.handleDamage();
+        }
     }
 }

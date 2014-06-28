@@ -10,6 +10,7 @@ import com.sk89q.minecraft.util.commands.Command;
 import com.sk89q.minecraft.util.commands.CommandContext;
 import com.sk89q.minecraft.util.commands.CommandException;
 import com.sk89q.minecraft.util.commands.CommandPermissions;
+import net.avonmc.dungeons.dungeon.DungeonHandler;
 import net.avonmc.dungeons.game.GameStage;
 import net.avonmc.dungeons.lobby.Lobby;
 import net.avonmc.dungeons.lobby.LobbyHandler;
@@ -63,7 +64,7 @@ public class LobbyCommand {
                     "\n&7Status: " + lobby.getStage().toString() +
                     "\n&7Max Players: &b" + lobby.getMaxPlayers() +
                     "\n&7Spawn Location: &b" + StringUtil.parseLoc(lobby.getLobbySpawn()) +
-                    "\n&7Active Dungeon: &b" + (lobby.getActiveDungeon() == null ? "NONE" : lobby.getActiveDungeon().getDisplayName())));
+                    "\n&7Active Dungeon: &b" + (lobby.getActiveDungeon() == null ? "NONE" : lobby.getActiveDungeon().getDisplayName() + "&7(" + DungeonHandler.getDungeonID(lobby.getActiveDungeon()) + ")")));
         }
     }
 
@@ -98,7 +99,7 @@ public class LobbyCommand {
         else LobbyHandler.inviteLobbyPlayer((Player) sender, args.getString(0));
     }
 
-    @Command(aliases = {"start"}, desc = "Lobby force-starting command", max = 0)
+    @Command(aliases = {"start"}, desc = "VIP Lobby force-starting command", max = 0)
     @CommandPermissions("dungeons.vip")
     public static void startLobby(CommandContext args, CommandSender sender) throws CommandException {
         Lobby lobby = sender instanceof Player ? LobbyHandler.getPlayerLobby((Player) sender) : null;
@@ -110,12 +111,23 @@ public class LobbyCommand {
         else lobby.setStage(GameStage.FORCE_STARTING);
     }
 
+    @Command(aliases = {"forcestart"}, desc = "Lobby force-starting Admin command", max = 0)
+    @CommandPermissions("dungeons.admin")
+    public static void forceStartLobby(CommandContext args, CommandSender sender) throws CommandException {
+        Lobby lobby = sender instanceof Player ? LobbyHandler.getPlayerLobby((Player) sender) : null;
+        if(!(sender instanceof Player)) Messaging.send(sender, "&cThis command cannot be run from the console!");
+        else if(lobby == null) Messaging.send(sender, "&cYou are not currently in a Lobby!");
+        else if(lobby.getStage() != GameStage.WAITING) Messaging.send(sender, "&cYour Lobby is already starting!");
+        else lobby.setStage(GameStage.FORCE_STARTING);
+    }
+
     @Command(aliases = {"continue"}, desc = "Lobby continuing command", max = 0)
     public static void continueLobby(CommandContext args, CommandSender sender) throws CommandException {
         Lobby lobby = sender instanceof Player ? LobbyHandler.getPlayerLobby((Player) sender) : null;
         if(!(sender instanceof Player)) Messaging.send(sender, "&cThis command cannot be run from the console!");
         else if(lobby == null) Messaging.send(sender, "&cYou are not currently in a Lobby!");
         else if(lobby.getStage() != GameStage.CONTINUING) Messaging.send(sender, "&cYou cannot use this command right now!");
+        else if(lobby.hasContinueVote((Player) sender)) Messaging.send(sender, "&cYou have already voted to continue!");
         else lobby.addContinueVote((Player) sender);
     }
 }

@@ -123,7 +123,7 @@ public class Stage {
 
     public int getLeftToKill() { return (totalSpawnedLimit - totalSpawned) + currentSpawned.size(); }
 
-    private boolean canContinue() { return currentSpawned.size() == 0 && totalSpawned >= totalSpawnedLimit; }
+    public boolean canContinue() { return currentSpawned.size() == 0 && totalSpawned >= totalSpawnedLimit; }
 
     public void reset() {
         for(LivingEntity e : spawnLocation.getWorld().getLivingEntities())

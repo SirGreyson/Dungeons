@@ -47,6 +47,12 @@ public class DungeonHandler {
         Messaging.printInfo("Dungeons successfully saved!");
     }
 
+    public static String getDungeonID(Dungeon dungeon) {
+        for(String dungeonID : loadedDungeons.keySet())
+            if(loadedDungeons.get(dungeonID) == dungeon) return dungeonID;
+        return null;
+    }
+
     public static Map<String, Dungeon> getDungeons() {
         return loadedDungeons;
     }

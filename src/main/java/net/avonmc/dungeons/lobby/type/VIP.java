@@ -73,8 +73,9 @@ public class VIP extends Lobby {
             Messaging.send(player, "&aYou have left your Lobby!");
         }
         if(getStage() == GameStage.RUNNING || getStage() == GameStage.CONTINUING) {
-            player.setHealth(0);
             if(getPlayers().size() <= 0) finish(false);
+            player.getInventory().clear();
+            player.getInventory().setArmorContents(null);
         }
     }
 

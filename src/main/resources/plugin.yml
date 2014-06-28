@@ -5,4 +5,4 @@ author: SirReason
 website: http://avonmc.net
 
 main: net.avonmc.dungeons.Dungeons
-depend: [MenuAPI, WorldEdit, Vault]
+depend: [BarAPI, MenuAPI, WorldEdit, Vault]

@@ -95,7 +95,7 @@ public class LobbyHandler {
     public static void removeLobbyPlayer(Player player) {
         Lobby lobby = getPlayerLobby(player);
         if(lobby == null) Messaging.send(player, "&cYou are not currently in a Lobby!");
-        else if(lobby.getStage() == GameStage.RUNNING) Messaging.send(player, "&cYou cannot leave once the Lobby has started!");
+        else if(lobby.getStage() == GameStage.RUNNING || lobby.getStage() == GameStage.CONTINUING) Messaging.send(player, "&cYou cannot leave once the Lobby has started!");
         else lobby.removePlayer(player);
     }
 

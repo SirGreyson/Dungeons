@@ -4,6 +4,7 @@ package net.avonmc.dungeons.lobby;/*
  * No part of this project or any of its contents may be reproduced, copied, modified or adapted, without the prior written consent of SirReason.
  */
 
+import me.confuser.barapi.BarAPI;
 import net.avonmc.dungeons.dungeon.Dungeon;
 import net.avonmc.dungeons.dungeon.DungeonHandler;
 import net.avonmc.dungeons.game.GameBoard;
@@ -20,6 +21,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.block.Sign;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
 
 import java.util.*;
 
@@ -33,7 +35,7 @@ public abstract class Lobby {
     private GameBoard gameBoard;
     private Dungeon activeDungeon;
 
-    private int continueVotes = 0;
+    private List<UUID> continueVotes = new ArrayList<UUID>();
 
     public Lobby(int maxPlayers, Location lobbySpawn, Set<Location> lobbySigns) {
         this.maxPlayers = maxPlayers;
@@ -123,19 +125,28 @@ public abstract class Lobby {
     private void removeAllPlayers() {
         for(OfflinePlayer player : getPlayers()) {
             gameBoard.removePlayer(player.getPlayer());
+            player.getPlayer().setHealth(player.getPlayer().getMaxHealth());
+            for(PotionEffect pe : player.getPlayer().getActivePotionEffects()) player.getPlayer().removePotionEffect(pe.getType());
             player.getPlayer().teleport(Settings.SPAWN_LOCATION);
+            if(BarAPI.hasBar(player.getPlayer())) BarAPI.removeBar(player.getPlayer());
+            if((activeDungeon.hasNextStage() || !activeDungeon.getActiveStage().canContinue()) && getStage() != GameStage.DISABLING) {
+                player.getPlayer().getInventory().clear();
+                player.getPlayer().getInventory().setArmorContents(null);
+            }
         }
     }
 
-    public boolean canContinue() { return continueVotes >= getPlayers().size(); }
+    public boolean canContinue() { return continueVotes.size() >= getPlayers().size(); }
+
+    public boolean hasContinueVote(Player player) { return continueVotes.contains(player.getUniqueId()); }
 
     public void addContinueVote(Player player) {
-        continueVotes++;
-        broadcast("&b" + player.getName() + " &ahas voted to continue! " + (canContinue() ? "&aContinuing..." : "&b" + (getPlayers().size() - continueVotes) + " &amore votes needed to continue!"));
+        continueVotes.add(player.getUniqueId());
+        broadcast("&b" + player.getName() + " &ahas voted to continue! " + (canContinue() ? "&aContinuing..." : "&b" + (getPlayers().size() - continueVotes.size()) + " &amore votes needed to continue!"));
         if (canContinue()) activeDungeon.startNextStage();
     }
 
-    public void resetContinueVotes() { this.continueVotes = 0; }
+    public void resetContinueVotes() { this.continueVotes = new ArrayList<UUID>(); }
 
     public void broadcast(String message) {
         for(OfflinePlayer player : getPlayers()) Messaging.send(player.getPlayer(), message);
@@ -148,7 +159,8 @@ public abstract class Lobby {
 
     public void finish(boolean isDisabling) {
         setStage(isDisabling ? GameStage.DISABLING : GameStage.RESETTING);
-        broadcast("&aGame over! " + (!activeDungeon.hasNextStage() ? "You win!" : "You made it to Stage &b" + activeDungeon.getActiveStage().getID() + "&a/&b" + activeDungeon.getLoadedStages().size()));
+        if(activeDungeon == null || activeDungeon.getActiveStage() == null) return;
+        broadcast("&aGame over! " + (!activeDungeon.hasNextStage() && activeDungeon.getActiveStage().canContinue() ? "You win!" : "You made it to Stage &b" + activeDungeon.getActiveStage().getID() + "&a/&b" + activeDungeon.getLoadedStages().size()));
         removeAllPlayers();
         if(!isDisabling) {
             setActiveDungeon(DungeonHandler.getRandomDungeon(isVIP()));

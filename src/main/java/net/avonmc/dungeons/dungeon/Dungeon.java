@@ -80,6 +80,7 @@ public class Dungeon {
         if(activeStage == null) this.activeStage = loadedStages.get(0);
         else activeStage = loadedStages.get(getStageID(activeStage) + 1);
         activeLobby.broadcast("&aTeleporting to Stage &b" + activeStage.getID() + "&a/&b" + loadedStages.size() + "&a...");
+        if(!hasNextStage()) activeLobby.broadcast("&6&lBoss Stage! Good luck!");
         for(OfflinePlayer player : activeLobby.getPlayers()) player.getPlayer().teleport(activeStage.getSpawnLocation());
         activeLobby.setStage(GameStage.RUNNING);
         activeLobby.resetContinueVotes();
