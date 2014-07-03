@@ -25,7 +25,7 @@ public class Stage {
     private Location spawnLocation;
     private int spawnedLimit;
     private int totalSpawnedLimit;
-    private String completionCommand;
+    private List<String> completionCommands;
     private Set<Location> mobSpawnLocations;
     private List<String> dungeonMobs;
 
@@ -37,16 +37,15 @@ public class Stage {
         this.spawnLocation = spawnLocation;
         this.spawnedLimit = Settings.DEFAULT_SPAWNED_LIMIT;
         this.totalSpawnedLimit = Settings.DEFAULT_TOTAL_SPAWNED_LIMIT;
-        this.completionCommand = "NONE";
         this.mobSpawnLocations = new HashSet<Location>();
     }
 
-    public Stage(Dungeon dungeon, Location spawnLocation, int spawnedLimit, int totalSpawnedLimit, String completionCommand, Set<Location> mobSpawnLocations, List<String> dungeonMobs) {
+    public Stage(Dungeon dungeon, Location spawnLocation, int spawnedLimit, int totalSpawnedLimit, List<String> completionCommand, Set<Location> mobSpawnLocations, List<String> dungeonMobs) {
         this.dungeon = dungeon;
         this.spawnLocation = spawnLocation;
         this.spawnedLimit = spawnedLimit;
         this.totalSpawnedLimit = totalSpawnedLimit;
-        this.completionCommand = completionCommand;
+        this.completionCommands = completionCommand;
         this.mobSpawnLocations = mobSpawnLocations;
         this.dungeonMobs = dungeonMobs;
     }
@@ -74,8 +73,9 @@ public class Stage {
     }
 
     public void runCompletionCommand() {
-        if(completionCommand == null || completionCommand.equalsIgnoreCase("NONE")) return;
-        for(OfflinePlayer player : dungeon.getActiveLobby().getPlayers()) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), completionCommand.replace("%p%", player.getName()));
+        if(completionCommands == null || completionCommands.isEmpty()) return;
+        for(OfflinePlayer player : dungeon.getActiveLobby().getPlayers())
+            for(String command : completionCommands) Bukkit.dispatchCommand(Bukkit.getConsoleSender(), command.replace("%p%", player.getName()));
     }
 
     public boolean hasMobSpawn(Location mobSpawn) {
@@ -149,14 +149,14 @@ public class Stage {
         output.put("spawnLocation", StringUtil.parseLoc(spawnLocation));
         output.put("spawnedLimit", spawnedLimit);
         output.put("totalSpawnedLimit", totalSpawnedLimit);
-        output.put("completionCmd", completionCommand);
+        output.put("completionCmd", completionCommands);
         output.put("mobSpawnLocations", StringUtil.parseLocList(mobSpawnLocations));
         output.put("dungeonMobs", dungeonMobs);
         return output;
     }
 
     public static Stage deserialize(Dungeon dungeon, ConfigurationSection c) {
-        return new Stage(dungeon, StringUtil.parseLocString(c.getString("spawnLocation")), c.getInt("spawnedLimit"), c.getInt("totalSpawnedLimit"), c.getString("completionCmd"),
+        return new Stage(dungeon, StringUtil.parseLocString(c.getString("spawnLocation")), c.getInt("spawnedLimit"), c.getInt("totalSpawnedLimit"), c.getStringList("completionCmd"),
                 StringUtil.parseLocStringList(c.getStringList("mobSpawnLocations")), c.getStringList("dungeonMobs"));
     }
 }
