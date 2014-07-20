@@ -45,11 +45,6 @@
             <version>1.7.9-R0.3-SNAPSHOT</version>
         </dependency>
         <dependency>
-            <groupId>net.avonmc</groupId>
-            <artifactId>MenuAPI</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
             <groupId>com.sk89q</groupId>
             <artifactId>worldedit</artifactId>
             <version>LATEST</version>

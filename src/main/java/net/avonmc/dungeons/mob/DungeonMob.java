@@ -72,9 +72,8 @@ public class DungeonMob {
         mob.getEquipment().setArmorContents(armorItems);
         mob.addPotionEffects(potionEffects);
         mob.setRemoveWhenFarAway(false);
+        handleDamage();
         runAbilityTask();
-        for(OfflinePlayer player : lobby.getPlayers())
-            if(player.isOnline()) BarAPI.setMessage(player.getPlayer(), displayName, 100f);
         return mob;
     }
 

@@ -13,7 +13,6 @@ import net.avonmc.dungeons.lobby.LobbyHandler;
 import net.avonmc.dungeons.mob.MobHandler;
 import net.avonmc.dungeons.util.Configuration;
 import net.avonmc.dungeons.util.Messaging;
-import net.avonmc.menu.MenuHandler;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 import org.bukkit.Bukkit;
@@ -29,7 +28,6 @@ public class Dungeons extends JavaPlugin {
     public static Random random = new Random();
 
     private static Configuration configuration;
-    private static MenuHandler menuHandler;
     private static WorldEditPlugin worldEditPlugin;
 
     private CommandHandler commandHandler;
@@ -58,9 +56,8 @@ public class Dungeons extends JavaPlugin {
         if(!getServer().getPluginManager().isPluginEnabled("Vault")) Messaging.printErr("Could not hook into Vault! Disabling...");
         else if(getEconomy() == null) Messaging.printErr("Could not hook into Economy! Disabling...");
         else if(getPermission() == null) Messaging.printErr("Could not hook into Permissions! Disabling...");
-        else if(getMenuHandler() == null) Messaging.printErr("Could not hook into MenuAPI! Disabling...");
         else if(getWorldEdit() == null) Messaging.printErr("Could not hook into WorldGuard! Disabling...");
-        return economy != null && permission != null && menuHandler != null && worldEditPlugin != null;
+        return economy != null && permission != null && worldEditPlugin != null;
     }
 
     private Economy getEconomy() {
@@ -78,11 +75,6 @@ public class Dungeons extends JavaPlugin {
     public Configuration getConfiguration() {
         if(configuration == null) configuration = new Configuration(this);
         return configuration;
-    }
-
-    public MenuHandler getMenuHandler() {
-        if(menuHandler == null && getServer().getPluginManager().isPluginEnabled("MenuAPI")) menuHandler = new MenuHandler(this);
-        return menuHandler;
     }
 
     public static WorldEditPlugin getWorldEdit() {
