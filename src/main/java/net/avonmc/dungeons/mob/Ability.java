@@ -1,7 +1,6 @@
 /*
- * Copyright © ReasonDev 2014
- * All Rights Reserved
- * No part of this project or any of its contents may be reproduced, copied, modified or adapted, without the prior written consent of SirReason.
+ * Copyright (c) 2014 ReasonDev
+ * All rights reserved.
  */
 
 package net.avonmc.dungeons.mob;

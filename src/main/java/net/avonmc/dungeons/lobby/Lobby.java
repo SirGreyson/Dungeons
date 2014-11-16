@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2014 ReasonDev
+ * All rights reserved.
+ */
+
 package net.avonmc.dungeons.lobby;/*
  * Copyright © ReasonDev 2014
  * All Rights Reserved
